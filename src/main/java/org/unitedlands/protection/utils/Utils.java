@@ -3,6 +3,7 @@ package org.unitedlands.protection.utils;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.WorldCoord;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -39,24 +40,25 @@ public class Utils {
         if (worldCoord == null)
             return;
 
-        final World world = worldCoord.getBukkitWorld();
+        var world = worldCoord.getBukkitWorld();
         if (world == null)
             return;
 
-        final int townBlockHeight = world.getMaxHeight() - 1;
-        final int townBlockSize = TownySettings.getTownBlockSize();
+        var townBlockHeight = world.getMaxHeight() - 1;
+        var townBlockSize = TownySettings.getTownBlockSize();
+        var bolt = UnitedProtection.getBoltAPI();
+
         for (int x = 0; x < townBlockSize; ++x) {
             for (int z = 0; z < townBlockSize; ++z) {
-                for (int y = townBlockHeight; y > 0; --y) {
-                    final int blockX = worldCoord.getX() * townBlockSize + x;
-                    final int blockZ = worldCoord.getZ() * townBlockSize + z;
-                    final Block block = world.getBlockAt(blockX, y, blockZ);
-                    var bolt = UnitedProtection.getBoltAPI();
+                for (int y = townBlockHeight; y > world.getMinHeight(); --y) {
+                    var blockX = worldCoord.getX() * townBlockSize + x;
+                    var blockZ = worldCoord.getZ() * townBlockSize + z;
+                    var block = world.getBlockAt(blockX, y, blockZ);
 
                     if (!bolt.isProtectable(block))
                         continue;
 
-                    final Protection protection = bolt.findProtection(block);
+                    var protection = bolt.findProtection(block);
                     if (protection != null) {
                         bolt.removeProtection(protection);
                     }

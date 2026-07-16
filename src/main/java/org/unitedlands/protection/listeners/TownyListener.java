@@ -6,6 +6,7 @@ import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.unitedlands.protection.UnitedProtection;
 import org.unitedlands.protection.utils.Utils;
 
 public class TownyListener implements Listener {
@@ -17,7 +18,7 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onPlotClear(final PlotClearEvent event) {
-        final TownBlock townBlock = event.getTownBlock();
+        var townBlock = event.getTownBlock();
         if (townBlock == null)
             return;
 
@@ -26,9 +27,14 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onTownRuin(final TownRuinedEvent event) {
-        for (final TownBlock townBlock : event.getTown().getTownBlocks()) {
-            Utils.removeProtections(townBlock.getWorldCoord());
-        }
+        var plugin = UnitedProtection.getPlugin();
+        var coords = event.getTown().getTownBlocks().stream()
+                .map(TownBlock::getWorldCoord)
+                .toList();
+
+        plugin.getServer().getGlobalRegionScheduler().run(plugin,
+                task -> coords.forEach(Utils::removeProtections)
+        );
     }
 
 }
