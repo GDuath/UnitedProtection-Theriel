@@ -1,7 +1,14 @@
+# Which worlds should this plugin protect?
+protected-worlds:
+  - world
+  - world_earth
+
 # What is the Y level that we should protect ores below?
 protect-anything-below: 45
+
 # Which blocks should we allow to be broken/placed under the specified y?
 block-whitelist:
   - SHULKER_BOX
-break-deny-message: 'You can''t break blocks here!'
-place-deny-message: 'You can''t place blocks here!'
+
+break-deny-message: '&c&lUnited&f&lProtection &8»&c You can''t break blocks here! Try going to &e/warp resource!'
+place-deny-message: '&c&lUnited&f&lProtection &8»&c You can''t place blocks here! Try going to &e/warp resource,&c or claim this area!'
